@@ -1,16 +1,822 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/sun.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sun Solutions — Quotes & Commissions</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sun Solutions</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f172a;color:#f8fafc;font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#1e293b}::-webkit-scrollbar-thumb{background:#374151;border-radius:3px}
+select,input{-webkit-appearance:none;appearance:none;font-family:'DM Sans',sans-serif}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=number]{-moz-appearance:textfield}
+
+/* Layout */
+.header{position:sticky;top:0;z-index:40;background:rgba(15,23,42,0.97);border-bottom:1px solid #2d3f55;backdrop-filter:blur(8px)}
+.header-inner{max-width:900px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo-title{font-weight:800;font-size:17px;letter-spacing:1px;color:#f8fafc}
+.logo-sub{font-size:10px;letter-spacing:3px;color:#f4b63f;text-transform:uppercase;margin-top:2px}
+.sun-icon{width:36px;height:36px;flex-shrink:0}
+.logo-wrap{display:flex;align-items:center;gap:10px}
+.header-actions{display:flex;align-items:center;gap:8px}
+.btn-ghost{background:none;border:1px solid #2d3f55;color:#94a3b8;border-radius:999px;padding:6px 12px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.btn-ghost:active{background:#1e293b}
+.btn-yellow{background:#f4b63f;color:#0f172a;border:none;border-radius:999px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px}
+.btn-yellow:active{background:#e8a92e}
+.pos-pill{border-radius:999px;padding:5px 12px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px}
+
+main{max-width:900px;margin:0 auto;padding:20px 16px;display:flex;flex-direction:column;gap:16px}
+
+/* Cards */
+.card{background:#1e293b;border:1px solid #2d3f55;border-radius:20px;padding:20px}
+.card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#94a3b8;padding-bottom:12px;border-bottom:1px solid #2d3f55;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.grid2{grid-template-columns:1fr}}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:500px){.grid3{grid-template-columns:1fr 1fr}}
+.full{grid-column:1/-1}
+
+/* Fields */
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#94a3b8}
+.field .hint{font-size:10px;color:#64748b;margin-top:-4px}
+.input,.select{width:100%;background:#374151;border:1px solid #4b5563;border-radius:12px;padding:12px 16px;font-size:14px;color:#f8fafc;outline:none;transition:border-color .15s}
+.input:focus,.select:focus{border-color:#0b2e83;box-shadow:0 0 0 2px rgba(11,46,131,0.3)}
+.select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px;cursor:pointer}
+.mono{font-family:'JetBrains Mono',monospace}
+
+/* Toggle */
+.toggle{display:flex;border-radius:12px;overflow:hidden;border:1px solid #4b5563}
+.toggle button{flex:1;padding:11px;font-size:13px;font-weight:500;background:#374151;color:#94a3b8;border:none;cursor:pointer;transition:all .15s}
+.toggle button.active-no{background:#1e3a5f;color:#f8fafc}
+.toggle button.active-yes{background:#f4b63f;color:#0f172a;font-weight:700}
+
+/* Stat cards */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(min-width:500px){.stat-grid{grid-template-columns:1fr 1fr 1fr}}
+.stat{background:#111827;border:1px solid #2d3f55;border-radius:16px;padding:14px}
+.stat.accent{background:#0b2e83;border-color:#0b2e83}
+.stat.highlight{background:linear-gradient(135deg,rgba(11,46,131,0.6),rgba(244,182,63,0.15));border:2px solid rgba(244,182,63,0.5)}
+.stat-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#64748b;margin-bottom:5px}
+.stat-value{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;color:#f8fafc}
+.stat.highlight .stat-value{color:#f4b63f;font-size:22px}
+.stat-sub{font-size:10px;color:#64748b;margin-top:3px}
+
+/* Info rows */
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(45,63,85,0.5)}
+.info-row:last-child{border-bottom:none}
+.info-row span:first-child{font-size:12px;color:#64748b}
+.info-row span:last-child{font-size:12px;font-family:'JetBrains Mono',monospace;color:#f8fafc}
+
+/* Position badge */
+.pos-badge{border-radius:12px;padding:10px 16px;display:flex;align-items:center;gap:10px;margin-top:8px}
+.pos-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pos-info{flex:1}
+.pos-name{font-size:13px;font-weight:600}
+.pos-desc{font-size:10px;color:#64748b;margin-top:1px}
+.pos-stats{display:flex;gap:16px;text-align:right}
+.pos-stat-label{font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:1px}
+.pos-stat-val{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700}
+
+/* Commission ladder */
+.ladder-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;border:1px solid #2d3f55;background:#111827;margin-bottom:6px;opacity:.35;transition:all .2s}
+.ladder-item.me{border-width:2px;opacity:1}
+.ladder-item.below{opacity:.65}
+.ladder-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ladder-name{flex:1;font-size:12px;color:#64748b}
+.ladder-item.me .ladder-name{font-weight:600}
+.ladder-pct{font-family:'JetBrains Mono',monospace;font-size:11px;color:#64748b}
+
+/* Commission table */
+.comm-table{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.comm-row{display:flex;justify-content:space-between;padding:5px 8px;border-radius:8px;font-size:11px;color:#64748b;font-family:'JetBrains Mono',monospace}
+.comm-row.active{font-weight:700}
+
+/* Divider */
+.divider{display:flex;align-items:center;gap:10px;margin:4px 0}
+.divider-line{flex:1;height:1px;background:#2d3f55}
+.divider-label{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#4b5563;white-space:nowrap}
+
+/* Final commission */
+.final-card{border-radius:20px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,rgba(11,46,131,0.7),rgba(30,41,59,1) 60%,rgba(244,182,63,0.1));border:2px solid rgba(244,182,63,0.4);box-shadow:0 8px 32px rgba(244,182,63,0.1)}
+.final-amount{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:#f4b63f}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px)}
+@media(min-width:600px){.modal-overlay{align-items:center;padding:16px}}
+.modal{background:#1e293b;border:1px solid #2d3f55;border-radius:24px 24px 0 0;width:100%;max-width:640px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden}
+@media(min-width:600px){.modal{border-radius:24px}}
+.modal-bar{height:4px;background:linear-gradient(90deg,#0b2e83,#f4b63f,#0b2e83);flex-shrink:0}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid #2d3f55;flex-shrink:0}
+.modal-title{font-size:18px;font-weight:700;color:#f8fafc}
+.modal-sub{font-size:12px;color:#64748b;margin-top:2px}
+.modal-body{overflow-y:auto;flex:1;padding:20px 24px;display:flex;flex-direction:column;gap:14px}
+.modal-foot{padding:16px 24px;border-top:1px solid #2d3f55;display:flex;gap:10px;flex-shrink:0}
+.btn-close{width:32px;height:32px;border-radius:50%;background:#374151;border:none;color:#94a3b8;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.btn-save{flex:1;padding:12px;border-radius:12px;background:#0b2e83;color:white;border:none;font-size:13px;font-weight:600;cursor:pointer}
+.btn-save:active{background:#1d4ed8}
+.btn-pdf{flex:1;padding:12px;border-radius:12px;background:#f4b63f;color:#0f172a;border:none;font-size:13px;font-weight:700;cursor:pointer}
+.btn-pdf:active{background:#e8a92e}
+.btn-saved{flex:1;padding:12px;border-radius:12px;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.4);color:#34d399;font-size:13px;font-weight:600}
+
+/* Alert box */
+.alert{border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:12px}
+.alert-yellow{background:rgba(244,182,63,0.1);border:1px solid rgba(244,182,63,0.3);color:#f4b63f}
+.alert-blue{background:rgba(11,46,131,0.2);border:1px solid rgba(11,46,131,0.4);color:#93c5fd}
+
+/* History */
+.hist-card{background:#111827;border:1px solid #2d3f55;border-radius:16px;overflow:hidden;margin-bottom:10px}
+.hist-top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
+.hist-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:10px 16px;border-top:1px solid #2d3f55}
+.hist-btn{padding:8px;border-radius:10px;font-size:11px;font-weight:600;border:1px solid;cursor:pointer;text-align:center}
+
+/* Admin */
+.admin-tabs{display:flex;gap:6px;padding:14px 24px 0;flex-shrink:0}
+.admin-tab{padding:6px 12px;border-radius:999px;font-size:12px;border:none;cursor:pointer;transition:all .15s}
+.admin-tab.active{background:#0b2e83;color:white}
+.admin-tab.inactive{background:none;color:#64748b}
+.admin-field{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#111827;border:1px solid #2d3f55;border-radius:12px;padding:12px 16px}
+.admin-field label{font-size:12px;color:#94a3b8;flex:1}
+.admin-input-wrap{display:flex;align-items:center;gap:4px}
+.admin-input{width:90px;background:#374151;border:1px solid #4b5563;border-radius:8px;padding:6px 10px;font-size:13px;font-family:'JetBrains Mono',monospace;color:#f8fafc;text-align:right;outline:none}
+
+.info-box{background:#111827;border:1px solid #2d3f55;border-radius:14px;padding:14px}
+.cta{width:100%;padding:16px;border-radius:16px;background:#f4b63f;color:#0f172a;font-size:14px;font-weight:700;border:none;cursor:pointer;box-shadow:0 4px 24px rgba(244,182,63,0.2)}
+.cta:active{background:#e8a92e}
+.top-bar{display:flex;justify-content:flex-end}
+.btn-reset{background:none;border:1px solid #2d3f55;color:#64748b;border-radius:999px;padding:6px 16px;font-size:12px;cursor:pointer}
+footer{text-align:center;padding:20px 0 40px;font-size:10px;color:#334155;letter-spacing:3px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ══════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════
+const PRODUCTS = {
+  sunrun:     { id:'sunrun',     label:'Sunrun',           epcRate:2.50, monthly:false },
+  lightreach: { id:'lightreach', label:'LightReach',       epcRate:2.50, monthly:true  },
+  cash:       { id:'cash',       label:'Cash / Financing', epcRate:2.50, monthly:false },
+};
+const PROJECT_TYPES = [
+  { v:'residential_sunrun',     l:'Residencial Sunrun' },
+  { v:'residential_lightreach', l:'Residencial LightReach' },
+  { v:'cash_financiamiento',    l:'Cash / Financiamiento' },
+];
+const PRICING_VERSIONS = ['2026-Q1','2026-Q2','2026-Q3'];
+const LOCATIONS = {
+  puerto_rico:{ label:'Puerto Rico', adder:0 },
+  vieques:    { label:'Vieques',     adder:0 },
+  culebra:    { label:'Culebra',     adder:0 },
+};
+const ROOF_TYPES = {
+  cemento:  { label:'Cemento',  adder:0 },
+  galvalum: { label:'Galvalum', adder:0 },
+};
+const POSITIONS = [
+  { v:'trainee',                l:'Trainee',               c:6,  o:30, admin:false, color:'#94a3b8' },
+  { v:'solar_consultant',       l:'Solar Consultant',      c:12, o:60, admin:false, color:'#60a5fa' },
+  { v:'sales_manager',          l:'Sales Manager',         c:13, o:65, admin:false, color:'#34d399' },
+  { v:'senior_sales_manager',   l:'Senior Sales Manager',  c:14, o:70, admin:false, color:'#a78bfa' },
+  { v:'elite_sales_manager',    l:'Elite Sales Manager',   c:15, o:75, admin:true,  color:'#f4b63f' },
+  { v:'business_sales_manager', l:'Business Sales Manager',c:16, o:80, admin:true,  color:'#fb923c' },
+  { v:'direct_sales_business',  l:'Direct Sales Business', c:17, o:85, admin:true,  color:'#f87171' },
+];
+const LR_TABLE = {'3.28':118,'4.10':148,'4.92':177,'5.33':194,'5.74':208,'6.15':221,'6.56':237,'6.97':251,'7.38':266,'7.79':281,'8.20':296,'8.61':311,'9.02':325,'9.43':340,'9.84':355,'10.25':370,'10.66':384,'11.07':399,'11.48':413,'11.89':428,'12.30':443,'13.12':472,'14.76':531,'16.40':590,'18.04':649};
+const ADMIN_DEFAULTS = { epc:{sunrun:2.50,lightreach:2.50,cash:2.50}, bat1:10500, bat2:20000, exp:7000, elec:2000, fico:1000, roof:{cemento:0,galvalum:0}, loc:{puerto_rico:0,vieques:0,culebra:0} };
+
+function getPos(v){ return POSITIONS.find(p=>p.v===v)||POSITIONS[1]; }
+
+// ══════════════════════════════════════════
+// FORMAT
+// ══════════════════════════════════════════
+const $ = n => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n||0);
+const pct = n => (n||0).toFixed(0)+'%';
+const kw  = n => (n||0).toFixed(2)+' kW';
+const ppw = n => '$'+parseFloat(n||0).toFixed(3)+'/W';
+
+// ══════════════════════════════════════════
+// CALCULATIONS
+// ══════════════════════════════════════════
+function lrPayment(kw){
+  const keys=Object.keys(LR_TABLE).map(Number).sort((a,b)=>a-b);
+  const r=parseFloat(kw.toFixed(2));
+  if(LR_TABLE[String(r)]!==undefined) return LR_TABLE[String(r)];
+  let lo=null,hi=null;
+  for(const k of keys){if(k<=r)lo=k;if(k>=r&&hi===null)hi=k;}
+  if(lo===null) return LR_TABLE[String(keys[0])];
+  if(hi===null) return LR_TABLE[String(keys[keys.length-1])];
+  if(lo===hi)   return LR_TABLE[String(lo)];
+  const t=(r-lo)/(hi-lo);
+  return Math.round(LR_TABLE[String(lo)]+t*(LR_TABLE[String(hi)]-LR_TABLE[String(lo)]));
+}
+function calcAll(s,adm){
+  const a=adm||ADMIN_DEFAULTS;
+  const panels=Number(s.panels)||0;
+  const sysKW=(panels*410)/1000;
+  const sysW=panels*410;
+  const epcRate=a.epc[s.product]||2.50;
+  const panelEPC=sysW*epcRate;
+  let batTotal=0;
+  if(s.batteryType!=='none'){batTotal=s.batteryCount===1?a.bat1:a.bat2;}
+  const expTotal=(s.expansionCount||0)*(a.exp||7000);
+  const roofAdd=(a.roof&&a.roof[s.roofType])||0;
+  const locAdd=(a.loc&&a.loc[s.location])||0;
+  const elecAdd=s.electricalIssues?(a.elec||2000):0;
+  const ficoAdd=s.lowFICO?(a.fico||1000):0;
+  const systemTotal=panelEPC+batTotal+expTotal+roofAdd+locAdd+elecAdd+ficoAdd;
+  const pos=getPos(s.sellerPosition);
+  const commPct=pos.c;
+  const ovPct=pos.o;
+  const baseComm=panelEPC*(commPct/100);
+  const epcVendido=parseFloat(s.epcVendido)||0;
+  const excedenteDiff=epcVendido>0?Math.max(0,epcVendido-panelEPC):0;
+  const excedente=(1000+excedenteDiff)*(ovPct/100);
+  const overrideBonus=excedente;
+  const finalComm=baseComm+excedente;
+  const lrPay=s.product==='lightreach'?lrPayment(sysKW):null;
+  return {sysKW,sysW,panelEPC,batTotal,expTotal,roofAdd,locAdd,elecAdd,ficoAdd,systemTotal,commPct,ovPct,baseComm,epcVendido,excedente,overrideBonus,finalComm,lrPay,epcRate};
+}
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let STATE = {
+  product:'sunrun', projectType:'residential_sunrun', sellerPosition:'solar_consultant',
+  pricingVersion:'2026-Q1', location:'puerto_rico', panels:10, panelType:'qcells_410',
+  batteryType:'pw3_hybrid', batteryCount:1, expansionCount:0, roofType:'cemento',
+  electricalIssues:false, lowFICO:false, epcVendido:'',
+};
+let ADMIN_CFG = (()=>{ try{const r=localStorage.getItem('ss_admin');return r?JSON.parse(r):JSON.parse(JSON.stringify(ADMIN_DEFAULTS));}catch{return JSON.parse(JSON.stringify(ADMIN_DEFAULTS));} })();
+let HISTORY   = (()=>{ try{const r=localStorage.getItem('ss_hist');return r?JSON.parse(r):[];}catch{return [];} })();
+let MODAL = null; // 'summary' | 'history' | 'admin'
+
+function saveAdmin(){ try{localStorage.setItem('ss_admin',JSON.stringify(ADMIN_CFG));}catch{} }
+function saveHistory(){ try{localStorage.setItem('ss_hist',JSON.stringify(HISTORY));}catch{} }
+
+function update(key,val){
+  STATE[key]=val;
+  if(key==='panels'){
+    const n=Number(val);
+    if(n>=37&&n<=43){STATE.panels=44;}
+    if(STATE.panels>=44){STATE.batteryType='pw3_hybrid';if(STATE.batteryCount<2)STATE.batteryCount=2;}
+    const maxExp=STATE.panels>=44?2:3;
+    if(STATE.expansionCount>maxExp)STATE.expansionCount=maxExp;
+  }
+  if(key==='batteryType'&&val==='none')STATE.batteryCount=1;
+  if(key==='product'){
+    const m={sunrun:'residential_sunrun',lightreach:'residential_lightreach',cash:'cash_financiamiento'};
+    STATE.projectType=m[val]||STATE.projectType;
+  }
+  render();
+}
+
+// ══════════════════════════════════════════
+// PDF
+// ══════════════════════════════════════════
+function genPDF(s,r,clientName,pos){
+  const date=new Date().toLocaleDateString('es-PR',{year:'numeric',month:'long',day:'numeric'});
+  const qid='SS-'+Date.now().toString().slice(-6);
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>Cotización ${qid}</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'DM Sans',sans-serif;background:#fff;color:#0f172a;font-size:13px}
+  .page{max-width:750px;margin:0 auto;padding:36px 44px}
+  .hdr{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #0b2e83;padding-bottom:18px;margin-bottom:24px}
+  h1{font-size:22px;font-weight:800;color:#0b2e83}
+  .sub{font-size:10px;color:#f4b63f;text-transform:uppercase;letter-spacing:2px;margin-top:2px}
+  .qid{font-size:18px;font-weight:700;color:#0b2e83;text-align:right}
+  .dt{font-size:11px;color:#64748b;text-align:right;margin-top:4px}
+  .client{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 18px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+  .cn{font-size:15px;font-weight:600}.cm{font-size:11px;color:#64748b;text-align:right}
+  .st{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#64748b;border-bottom:1px solid #e2e8f0;padding-bottom:6px;margin:18px 0 10px}
+  table{width:100%;border-collapse:collapse}
+  th{font-size:10px;text-transform:uppercase;color:#64748b;text-align:left;padding:7px 10px;background:#f8fafc;border-bottom:1px solid #e2e8f0}
+  td{padding:8px 10px;border-bottom:1px solid #f1f5f9;font-size:12px}td.r{text-align:right}
+  tr.tot td{font-weight:700;background:#f8fafc}
+  .final{background:linear-gradient(135deg,#0b2e83,#1e3a8a);color:white;border-radius:12px;padding:20px 24px;margin:16px 0;display:flex;justify-content:space-between;align-items:center}
+  .fl{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;opacity:.8}.fa{font-size:32px;font-weight:800;color:#f4b63f}
+  .foot{margin-top:28px;padding-top:14px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between}
+  .foot p{font-size:10px;color:#94a3b8}
+  @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  </style></head><body><div class="page">
+  <div class="hdr"><div><h1>☀ SUN SOLUTIONS</h1><div class="sub">Quotes & Commissions</div></div>
+  <div><div class="qid">${qid}</div><div class="dt">${date}</div></div></div>
+  <div class="client"><div><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin-bottom:2px">Cliente</div><div class="cn">${clientName||'Sin nombre'}</div></div>
+  <div class="cm">${Object.values(LOCATIONS).find((_,i)=>Object.keys(LOCATIONS)[i]===s.location)?.label||s.location}<br/>${pos.l} · ${s.panels} paneles</div></div>
+  <div class="st">Sistema</div>
+  <table><thead><tr><th>Concepto</th><th class="r">Monto</th><th class="r">Comisionable</th></tr></thead><tbody>
+  <tr><td>Panel EPC (${s.panels}×410W×$${r.epcRate}/W)</td><td class="r">${$(r.panelEPC)}</td><td class="r">✓ Sí</td></tr>
+  ${r.batTotal>0?`<tr><td>${s.batteryCount}× PW3 Hybrid</td><td class="r">${$(r.batTotal)}</td><td class="r">No</td></tr>`:''}
+  ${r.expTotal>0?`<tr><td>${s.expansionCount}× Expansión</td><td class="r">${$(r.expTotal)}</td><td class="r">No</td></tr>`:''}
+  ${r.elecAdd>0?`<tr><td>Problemas Eléctricos</td><td class="r">${$(r.elecAdd)}</td><td class="r">No</td></tr>`:''}
+  ${r.ficoAdd>0?`<tr><td>Low FICO</td><td class="r">${$(r.ficoAdd)}</td><td class="r">No</td></tr>`:''}
+  <tr class="tot"><td>Total del Sistema</td><td class="r">${$(r.systemTotal)}</td><td></td></tr>
+  </tbody></table>
+  <div class="st">Comisión — ${pos.l}</div>
+  <table><tbody>
+  <tr><td>Panel EPC (base comisionable)</td><td class="r">${$(r.panelEPC)}</td></tr>
+  <tr><td>Comisión Base (${pos.c}%)</td><td class="r">${$(r.baseComm)}</td></tr>
+  <tr><td>PPW Vendido</td><td class="r">${s.soldPPW?ppw(s.soldPPW):'—'}</td></tr>
+  <tr><td>Total Vendido</td><td class="r">${$(r.soldTotal)}</td></tr>
+  <tr><td>Excedente</td><td class="r">${$(r.excedente)}</td></tr>
+  <tr><td>Override (${pos.o}%)</td><td class="r">${$(r.overrideBonus)}</td></tr>
+  </tbody></table>
+  <div class="final"><div><div class="fl">Comisión Final</div><div style="font-size:10px;opacity:.5;margin-top:2px">Base + Override</div></div><div class="fa">${$(r.finalComm)}</div></div>
+  ${r.lrPay?`<div class="st">LightReach — Pago Mensual</div><p style="font-size:20px;font-weight:700;color:#0b2e83;padding:8px 0">${$(r.lrPay)}<span style="font-size:12px;color:#64748b;font-weight:400">/mes estimado</span></p>`:''}
+  <div class="foot"><p>Sun Solutions © 2026 — ${qid}</p><p>Estimado sujeto a verificación. No constituye contrato.</p></div>
+  </div><script>window.onload=()=>window.print();<\/script></body></html>`;
+  const w=window.open('','_blank','width=900,height=700');
+  if(w){w.document.write(html);w.document.close();}
+}
+
+// ══════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════
+function el(tag,attrs,children){
+  const e=document.createElement(tag);
+  if(attrs) Object.entries(attrs).forEach(([k,v])=>{
+    if(k==='style'&&typeof v==='object'){Object.assign(e.style,v);}
+    else if(k.startsWith('on')&&typeof v==='function'){e.addEventListener(k.slice(2).toLowerCase(),v);}
+    else if(k==='className'){e.className=v;}
+    else if(k==='htmlFor'){e.setAttribute('for',v);}
+    else{e.setAttribute(k,v);}
+  });
+  if(typeof children==='string'){e.textContent=children;}
+  else if(Array.isArray(children)){children.flat(Infinity).filter(Boolean).forEach(c=>e.appendChild(typeof c==='string'?document.createTextNode(c):c));}
+  else if(children instanceof Node){e.appendChild(children);}
+  return e;
+}
+function E(tag,attrs,...children){return el(tag,attrs,children.flat(Infinity));}
+
+function field(label,hint,input){
+  return E('div',{className:'field'},
+    E('label',{},label),
+    
+    input
+  );
+}
+function selectEl(val,options,onChange,disabled){
+  const s=E('select',{className:'select mono',onChange,disabled:disabled?'disabled':null},
+    ...options.map(o=>E('option',{value:o.v||o},o.l||o))
+  );
+  s.value=val;
+  return s;
+}
+function numInput(val,onChange,{min,step,prefix,suffix,mono}={}){
+  const wrap=E('div',{style:{position:'relative',display:'flex',alignItems:'center'}});
+  if(prefix){const sp=E('span',{style:{position:'absolute',left:'14px',fontSize:'13px',color:'#94a3b8',fontFamily:'JetBrains Mono,monospace',pointerEvents:'none'}},prefix);wrap.appendChild(sp);}
+  const inp=E('input',{type:'number',className:'input '+(mono?'mono':''),value:String(val),onChange,style:{paddingLeft:prefix?'32px':'16px',paddingRight:suffix?'44px':'16px'}});
+  if(min!==undefined)inp.min=String(min);
+  if(step!==undefined)inp.step=String(step);
+  wrap.appendChild(inp);
+  if(suffix){const sp=E('span',{style:{position:'absolute',right:'14px',fontSize:'13px',color:'#94a3b8',fontFamily:'JetBrains Mono,monospace',pointerEvents:'none'}},suffix);wrap.appendChild(sp);}
+  return wrap;
+}
+function toggle(val,onChange){
+  const no=E('button',{className:'toggle-btn'+(val===false?' active-no':''),onClick:()=>onChange(false)},'No');
+  const yes=E('button',{className:'toggle-btn'+(val===true?' active-yes':''),onClick:()=>onChange(true)},'Sí');
+  [no,yes].forEach(b=>{b.style.flex='1';b.style.padding='11px';b.style.fontSize='13px';b.style.fontWeight='500';b.style.background=val===false&&b===no?'#1e3a5f':val===true&&b===yes?'#f4b63f':'#374151';b.style.color=val===true&&b===yes?'#0f172a':val===false&&b===no?'#f8fafc':'#94a3b8';b.style.border='none';b.style.cursor='pointer';});
+  const d=E('div',{style:{display:'flex',borderRadius:'12px',overflow:'hidden',border:'1px solid #4b5563'}},no,yes);
+  return d;
+}
+function infoRow(label,value){
+  return E('div',{className:'info-row'},E('span',{},label),E('span',{className:'mono'},value));
+}
+function divider(label){
+  return E('div',{className:'divider'},label&&E('span',{className:'divider-label'},label),E('div',{className:'divider-line'}));
+}
+function statCard(label,value,{accent,highlight,sub}={}){
+  const d=E('div',{className:'stat'+(accent?' accent':'')+(highlight?' highlight':'')},
+    E('div',{className:'stat-label'},label),
+    E('div',{className:'stat-value mono'},value),
+    sub&&E('div',{className:'stat-sub'},sub)
+  );
+  return d;
+}
+
+// ══════════════════════════════════════════
+// SECTIONS
+// ══════════════════════════════════════════
+function renderGeneral(s,res,pos){
+  const posOpts=POSITIONS.map(p=>({v:p.v,l:p.l}));
+  const locOpts=Object.entries(LOCATIONS).map(([k,v])=>({v:k,l:v.label}));
+  const prodOpts=Object.values(PRODUCTS).map(p=>({v:p.id,l:p.label}));
+
+  const posSelect=selectEl(s.sellerPosition,posOpts,e=>update('sellerPosition',e.target.value));
+
+  const badge=E('div',{});
+
+  const body=E('div',{className:'card'},
+    E('div',{className:'card-title'},'🏢 Información General'),
+    E('div',{className:'grid2'},
+      field('Producto / Programa',null,selectEl(s.product,prodOpts,e=>{update('product',e.target.value);})),
+      field('Tipo de Proyecto',null,selectEl(s.projectType,PROJECT_TYPES.map(p=>({v:p.v,l:p.l})),e=>update('projectType',e.target.value))),
+      E('div',{className:'full'},
+        field('Posición del Vendedor',null,posSelect),
+        badge
+      ),
+      field('Versión de Precios',null,selectEl(s.pricingVersion,PRICING_VERSIONS.map(v=>({v,l:v})),e=>update('pricingVersion',e.target.value))),
+      field('Ubicación',null,selectEl(s.location,locOpts,e=>update('location',e.target.value)))
+    )
+  );
+  return body;
+}
+
+function renderPanels(s){
+  const sysKW=(Number(s.panels)*410)/1000;
+  const jumped=Number(s.panels)===44;
+  const inp=numInput(s.panels,e=>{
+    let n=Number(e.target.value);
+    if(n>=37&&n<=43){n=44;e.target.value=44;}
+    update('panels',n);
+  },{min:1,mono:true});
+
+  // EPC Base = panelEPC + batteries + expansions + adders (calculated live)
+  const res=calcAll(s,ADMIN_CFG);
+  const sysBox=E('div',{style:{background:'rgba(11,46,131,0.2)',border:'1px solid rgba(11,46,131,0.35)',borderRadius:'14px',padding:'14px 18px',display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px',alignItems:'center'}},
+    E('div',{},E('div',{style:{fontSize:'10px',textTransform:'uppercase',letterSpacing:'2px',color:'#64748b',marginBottom:'4px'}},'Tamaño'),E('div',{className:'mono',style:{fontSize:'18px',fontWeight:'600'}},kw(sysKW))),
+    
+    E('div',{style:{textAlign:'right'}},E('div',{style:{fontSize:'10px',textTransform:'uppercase',letterSpacing:'2px',color:'#64748b',marginBottom:'4px'}},'EPC Base'),E('div',{className:'mono',style:{fontSize:'18px',fontWeight:'700',color:'#f4b63f'}},'$'+(res.sysW>0?(res.systemTotal/res.sysW).toFixed(2):'0.00')+'/W'))
+  );
+  const warns=[];
+  if(jumped)warns.push(E('div',{style:{fontSize:'11px',color:'#f4b63f',marginTop:'6px'}},'⚡ Saltó a 44 paneles (37–43 no permitido)'));
+  if(s.panels>=44)warns.push(E('div',{style:{fontSize:'11px',color:'#f4b63f',marginTop:'4px'}},'⚠️ Sistema grande — 2× PW3 Hybrid requerido'));
+
+  return E('div',{className:'card'},
+    E('div',{className:'card-title'},'☀️ Paneles'),
+    E('div',{className:'grid2'},
+      E('div',{},field('Número de Paneles',null,inp),...warns),
+      field('Tipo de Panel',null,selectEl(s.panelType,[{v:'qcells_410',l:'QCells 410'}],()=>{}))
+    ),
+    sysBox
+  );
+}
+
+function renderStorage(s,adm){
+  const batteryLocked=s.panels>=44;
+  const maxExp=s.panels>=44?2:3;
+  const batOpts=[{v:'none',l:'Ninguna'},{v:'pw3_hybrid',l:'PW3 Hybrid'}];
+  const cntOpts=[{v:'1',l:'1 Unidad'},{v:'2',l:'2 Unidades'}];
+  const expOpts=Array.from({length:maxExp+1},(_,i)=>({v:String(i),l:i===0?'Ninguna':`${i} Unidad${i>1?'es':''}`}));
+  const bat1=adm.bat1||10500,bat2=adm.bat2||20000,expPrice=adm.exp||7000;
+  const batTotal=s.batteryType!=='none'?(s.batteryCount===1?bat1:bat2):0;
+  const expTotal=(s.expansionCount||0)*expPrice;
+
+  const kids=[E('div',{className:'card-title'},'🔋 Almacenamiento')];
+
+
+  const grid=E('div',{className:'grid2'});
+  const batSel=selectEl(s.batteryType,batOpts,e=>update('batteryType',e.target.value));
+  grid.appendChild(field('Tipo de Batería',null,batSel));
+
+  if(s.batteryType!=='none'){
+    const cntSel=selectEl(String(s.batteryCount),cntOpts,e=>update('batteryCount',Number(e.target.value)));
+    grid.appendChild(field('Cantidad',null,cntSel));
+  }
+  grid.appendChild(field(`Expansiones (máx ${maxExp})`,null,selectEl(String(s.expansionCount),expOpts,e=>update('expansionCount',Number(e.target.value)))));
+  kids.push(grid);
+
+
+  return E('div',{className:'card'},...kids);
+}
+
+function renderAdders(s,res){
+  const total=res.elecAdd+res.ficoAdd+res.roofAdd+res.locAdd;
+  return E('div',{className:'card'},
+    E('div',{className:'card-title'},'🔧 Adders'),
+    E('div',{className:'grid2'},
+      field('Tipo de Techo',null,
+        selectEl(s.roofType,[{v:'cemento',l:'Cemento'},{v:'galvalum',l:'Galvalum'}],e=>update('roofType',e.target.value))),
+      field('Problemas Eléctricos',null,toggle(s.electricalIssues,v=>update('electricalIssues',v))),
+      field('Low FICO',null,toggle(s.lowFICO,v=>update('lowFICO',v)))
+    ),
+    total>0&&E('div',{className:'info-box',style:{marginTop:'12px'}},
+      E('div',{style:{fontSize:'9px',textTransform:'uppercase',letterSpacing:'2px',color:'#4b5563',marginBottom:'8px'}},'Adders (no comisionables)'),
+      res.elecAdd>0&&infoRow('Eléctrico',$(res.elecAdd)),
+      res.ficoAdd>0&&infoRow('Low FICO',$(res.ficoAdd))
+    )
+  );
+}
+
+function renderSales(s,res,pos){
+  const epcInput=numInput(s.epcVendido,e=>update('epcVendido',e.target.value),{step:0.01,prefix:'$',mono:true});
+
+  // 3 result cards
+  const resultCards=parseFloat(s.epcVendido)>0?E('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'10px',marginTop:'12px'}},
+    statCard('Comisión',$(res.baseComm),{sub:pos.c+'%'}),
+    statCard('Excedente',$(res.overrideBonus),{sub:'Override '+pos.o+'%'}),
+    E('div',{style:{background:`linear-gradient(135deg,${pos.color}30,${pos.color}10)`,border:`2px solid ${pos.color}60`,borderRadius:'16px',padding:'14px',textAlign:'center'}},
+      E('div',{style:{fontSize:'10px',textTransform:'uppercase',letterSpacing:'1.5px',color:'#64748b',marginBottom:'6px'}},'Comisión Total'),
+      E('div',{className:'mono',style:{fontSize:'20px',fontWeight:'700',color:pos.color}},$(res.finalComm))
+    )
+  ):null;
+
+  return E('div',{className:'card'},
+    
+    field('EPC Vendido',null,epcInput),
+    resultCards
+  );
+}
+
+function renderPosition(s,res,pos){
+  const myIdx=POSITIONS.findIndex(p=>p.v===s.sellerPosition);
+  const ladder=E('div',{style:{marginBottom:'12px'}});
+  [...POSITIONS].reverse().forEach(p=>{
+    const idx=POSITIONS.indexOf(p);
+    const isMe=p.v===s.sellerPosition;
+    const isBelow=idx<myIdx;
+    const item=E('div',{className:`ladder-item${isMe?' me':''}${isBelow&&!isMe?' below':''}`,style:{borderColor:isMe?p.color:'#2d3f55',backgroundColor:isMe?p.color+'18':'#111827',opacity:isMe?1:isBelow?0.65:0.3}},
+      E('div',{className:'ladder-dot',style:{backgroundColor:isMe?p.color:'#4b5563'}}),
+      E('div',{className:'ladder-name',style:{color:isMe?p.color:'#64748b'}},p.l+(isMe?' ← Tú':'')),
+      E('div',{className:'ladder-pct',style:{color:isMe?p.color:'#64748b'}},p.c+'% / '+p.o+'%')
+    );
+    ladder.appendChild(item);
+  });
+
+  const breakdown=E('div',{className:'info-box'});
+  breakdown.appendChild(E('div',{style:{fontSize:'9px',textTransform:'uppercase',letterSpacing:'2px',color:'#4b5563',marginBottom:'8px'}},'Tu Desglose'));
+  [[`Comisión (${pos.c}%)`,$(res.baseComm)],[`Excedente × Override (${pos.o}%)`,$(res.overrideBonus)]].forEach(([l,v])=>breakdown.appendChild(infoRow(l,v)));
+
+  const total=E('div',{style:{borderRadius:'16px',border:`2px solid ${pos.color}60`,background:`linear-gradient(135deg,${pos.color}20 0%,transparent 100%)`,padding:'18px 20px',display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:'12px'}},
+    E('div',{},E('div',{style:{fontSize:'10px',textTransform:'uppercase',letterSpacing:'2px',color:'#64748b'}},'Tu Comisión Final'),E('div',{style:{fontSize:'9px',color:'#4b5563',marginTop:'2px'}},'Comisión + Excedente Override')),
+    E('div',{className:'mono',style:{fontSize:'24px',fontWeight:'700',color:pos.color}},$(res.finalComm))
+  );
+
+  return E('div',{className:'card'},
+    E('div',{className:'card-title'},'🏅 Comisión por Posición'),
+    ladder,
+    breakdown,
+    total
+  );
+}
+
+function renderResults(s,res,pos){
+  const kids=[E('div',{className:'card-title'},'📊 Resultados')];
+
+  // LightReach
+  if(res.lrPay){
+    kids.push(E('div',{className:'alert alert-blue'},`💡 Pago Mensual LightReach: `,E('strong',{},$(res.lrPay)+'/mes')));
+  }
+
+  // Comision + Excedente side by side
+  kids.push(E('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'10px',marginBottom:'4px'}},
+    statCard('Comisión',parseFloat(s.epcVendido)>0?$(res.baseComm):'—',{sub:res.commPct+'%'}),
+    statCard('Excedente',parseFloat(s.epcVendido)>0?$(res.overrideBonus):'—',{sub:'Override '+res.ovPct+'%'})
+  ));
+
+  // Final commission — always visible
+  kids.push(E('div',{className:'final-card',style:{marginTop:'4px'}},
+    E('div',{},
+      E('div',{style:{fontSize:'10px',textTransform:'uppercase',letterSpacing:'2px',color:'#94a3b8'}},'Comisión Total'),
+      E('div',{style:{fontSize:'9px',color:'#64748b',marginTop:'3px'}},`${pos.l} · ${res.commPct}%`)
+    ),
+    E('div',{className:'final-amount'},$(res.finalComm))
+  ));
+
+  return E('div',{className:'card'},...kids);
+}
+
+// ══════════════════════════════════════════
+// MODAL: SUMMARY
+// ══════════════════════════════════════════
+function renderSummaryModal(s,res,pos){
+  let clientName='',saved=false;
+  const nameInput=E('input',{type:'text',className:'input',placeholder:'Ej: Juan García',onInput:e=>clientName=e.target.value,style:{marginTop:'6px'}});
+  const posRow=E('div',{style:{borderRadius:'12px',padding:'10px 14px',border:`1px solid ${pos.color}40`,backgroundColor:pos.color+'15',display:'flex',alignItems:'center',gap:'10px'}},
+    E('div',{style:{width:'8px',height:'8px',borderRadius:'50%',backgroundColor:pos.color,flexShrink:'0'}}),
+    E('div',{},E('div',{style:{fontSize:'13px',fontWeight:'600',color:pos.color}},pos.l),E('div',{style:{fontSize:'10px',color:'#64748b'}},`Comisión ${pos.c}% — Override ${pos.o}%`))
+  );
+  const sysGrid=E('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}});
+  [{l:'Sistema',v:kw(res.sysKW)},{l:'Paneles',v:String(s.panels)},{l:'Batería',v:s.batteryType==='none'?'N/A':s.batteryCount+'× PW3'}].forEach(({l,v})=>{
+    sysGrid.appendChild(E('div',{style:{background:'#111827',border:'1px solid #2d3f55',borderRadius:'12px',padding:'10px',textAlign:'center'}},
+      E('div',{style:{fontSize:'9px',textTransform:'uppercase',letterSpacing:'1px',color:'#64748b',marginBottom:'4px'}},l),
+      E('div',{className:'mono',style:{fontSize:'13px',fontWeight:'600'}},v)
+    ));
+  });
+
+  const costsBox=E('div',{className:'info-box'});
+  costsBox.appendChild(E('div',{style:{fontSize:'9px',textTransform:'uppercase',letterSpacing:'2px',color:'#4b5563',marginBottom:'8px'}},'Costos'));
+  [['Panel EPC',$(res.panelEPC)],res.batTotal>0&&['Baterías',$(res.batTotal)],res.expTotal>0&&['Expansiones',$(res.expTotal)],['Total Sistema',$(res.systemTotal)]].filter(Boolean).forEach(([l,v])=>costsBox.appendChild(infoRow(l,v)));
+
+  const commBox=E('div',{className:'info-box'});
+  commBox.appendChild(E('div',{style:{fontSize:'9px',textTransform:'uppercase',letterSpacing:'2px',color:'#4b5563',marginBottom:'8px'}},'Comisión'));
+  [[`Comisión (${res.commPct}%)`,$(res.baseComm)],[`Excedente × Override (${res.ovPct}%)`,$(res.overrideBonus)],['Comisión Total',$(res.finalComm)]].forEach(([l,v],i)=>{
+    const r=infoRow(l,v);
+    if(i===2){r.style.borderTop='1px solid #2d3f55';r.style.paddingTop='8px';r.querySelector('span:last-child').style.color='#f4b63f';r.querySelector('span:last-child').style.fontSize='16px';}
+    commBox.appendChild(r);
+  });
+
+  const saveBtn=E('button',{className:'btn-save',onClick:()=>{
+    if(!saved){
+      HISTORY=[{id:Date.now(),savedAt:new Date().toISOString(),clientName:clientName||'Sin nombre',state:{...s},results:{...res}},...HISTORY].slice(0,50);
+      saveHistory();saved=true;
+      saveBtn.className='btn-saved';saveBtn.textContent='✓ Guardada';
+    }
+  }},'💾 Guardar');
+
+  return E('div',{className:'modal-overlay',onClick:e=>{if(e.target.className==='modal-overlay'){MODAL=null;render();}}},
+    E('div',{className:'modal'},
+      E('div',{className:'modal-bar'}),
+      E('div',{className:'modal-head'},
+        E('div',{},E('div',{className:'modal-title'},'Resumen de Cotización'),E('div',{className:'modal-sub'},PRODUCTS[s.product].label+' · '+s.panels+' paneles')),
+        E('button',{className:'btn-close',onClick:()=>{MODAL=null;render();}},'✕')
+      ),
+      E('div',{className:'modal-body'},
+        E('div',{},E('label',{style:{fontSize:'10px',textTransform:'uppercase',letterSpacing:'2px',color:'#64748b'}},'Nombre del Cliente'),nameInput),
+        posRow,sysGrid,costsBox,commBox,
+        res.lrPay&&E('div',{className:'alert alert-blue'},`💡 Pago LightReach: `,E('strong',{},$(res.lrPay)+'/mes'))
+      ),
+      E('div',{className:'modal-foot'},
+        saveBtn,
+        E('button',{className:'btn-pdf',onClick:()=>genPDF(s,res,clientName,pos)},'📄 PDF')
+      )
+    )
+  );
+}
+
+// ══════════════════════════════════════════
+// MODAL: HISTORY
+// ══════════════════════════════════════════
+function renderHistoryModal(){
+  const body=E('div',{className:'modal-body'});
+  if(HISTORY.length===0){
+    body.appendChild(E('div',{style:{textAlign:'center',padding:'48px 0'}},E('div',{style:{fontSize:'40px',marginBottom:'12px'}},'📋'),E('div',{style:{color:'#64748b',fontSize:'14px'}},'No hay cotizaciones guardadas')));
+  } else {
+    HISTORY.forEach(q=>{
+      const pos=getPos(q.state.sellerPosition);
+      const dt=new Date(q.savedAt).toLocaleDateString('es-PR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+      const card=E('div',{className:'hist-card'},
+        E('div',{className:'hist-top'},
+          E('div',{style:{display:'flex',alignItems:'center',gap:'10px'}},
+            E('div',{style:{width:'32px',height:'32px',borderRadius:'50%',backgroundColor:pos.color+'20',border:`1px solid ${pos.color}40`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'14px'}},'☀️'),
+            E('div',{},E('div',{style:{fontSize:'13px',fontWeight:'600'}},q.clientName),E('div',{style:{fontSize:'10px',color:'#64748b'}},PRODUCTS[q.state.product]?.label+' · '+q.state.panels+' paneles'))
+          ),
+          E('div',{style:{textAlign:'right'}},E('div',{className:'mono',style:{fontSize:'13px',fontWeight:'700',color:'#f4b63f'}},$(q.results.finalComm)),E('div',{style:{fontSize:'9px',color:'#4b5563',marginTop:'2px'}},dt))
+        ),
+        E('div',{className:'hist-actions'},
+          E('div',{className:'hist-btn',style:{background:'rgba(11,46,131,0.3)',borderColor:'rgba(11,46,131,0.4)',color:'#60a5fa',cursor:'pointer'},onClick:()=>{Object.assign(STATE,q.state);MODAL=null;render();}},'📂 Cargar'),
+          E('div',{className:'hist-btn',style:{background:'rgba(244,182,63,0.15)',borderColor:'rgba(244,182,63,0.3)',color:'#f4b63f',cursor:'pointer'},onClick:()=>genPDF(q.state,q.results,q.clientName,pos)},'📄 PDF'),
+          E('div',{className:'hist-btn',style:{background:'rgba(239,68,68,0.15)',borderColor:'rgba(239,68,68,0.3)',color:'#f87171',cursor:'pointer'},onClick:()=>{HISTORY=HISTORY.filter(h=>h.id!==q.id);saveHistory();render();}}, '🗑 Borrar')
+        )
+      );
+      body.appendChild(card);
+    });
+  }
+  return E('div',{className:'modal-overlay',onClick:e=>{if(e.target.className==='modal-overlay'){MODAL=null;render();}}},
+    E('div',{className:'modal'},
+      E('div',{className:'modal-bar'}),
+      E('div',{className:'modal-head'},
+        E('div',{},E('div',{className:'modal-title'},'Historial'),E('div',{className:'modal-sub'},HISTORY.length+' cotizaciones guardadas')),
+        E('div',{style:{display:'flex',gap:'8px',alignItems:'center'}},
+          HISTORY.length>0&&E('button',{className:'btn-ghost',style:{color:'#ef4444',borderColor:'rgba(239,68,68,0.4)'},onClick:()=>{if(confirm('¿Borrar todo el historial?')){HISTORY=[];saveHistory();render();}}},'Limpiar'),
+          E('button',{className:'btn-close',onClick:()=>{MODAL=null;render();}},'✕')
+        )
+      ),
+      body
+    )
+  );
+}
+
+// ══════════════════════════════════════════
+// MODAL: ADMIN
+// ══════════════════════════════════════════
+function renderAdminModal(s){
+  const pos=getPos(s.sellerPosition);
+  if(!pos.admin){
+    return E('div',{className:'modal-overlay',onClick:e=>{if(e.target.className==='modal-overlay'){MODAL=null;render();}}},
+      E('div',{className:'modal'},
+        E('div',{className:'modal-bar'}),
+        E('div',{className:'modal-head'},E('div',{className:'modal-title'},'Panel Admin'),E('button',{className:'btn-close',onClick:()=>{MODAL=null;render();}},'✕')),
+        E('div',{className:'modal-body'},E('div',{style:{textAlign:'center',padding:'40px 0'}},E('div',{style:{fontSize:'40px',marginBottom:'12px'}},'🔒'),E('div',{style:{color:'#f8fafc',fontSize:'14px',fontWeight:'600'}},'Acceso Restringido'),E('div',{style:{color:'#64748b',fontSize:'12px',marginTop:'6px'}},'Solo Elite Sales Manager y superior')))
+      )
+    );
+  }
+
+  let activeTab='epc';
+  const tabs=['epc','battery','adders','location'];
+  const tabLabels={epc:'EPC',battery:'Baterías',adders:'Adders',location:'Ubicaciones'};
+  let savedMsg=false;
+
+  function adminField(label,value,onChange,{prefix='',suffix=''}={}){
+    const inp=E('input',{type:'number',className:'admin-input',value:String(value),step:'0.01',onInput:e=>{const n=parseFloat(e.target.value);if(!isNaN(n))onChange(n);}});
+    return E('div',{className:'admin-field'},
+      E('label',{},label),
+      E('div',{className:'admin-input-wrap'},prefix&&E('span',{style:{fontSize:'12px',color:'#64748b',fontFamily:'JetBrains Mono,monospace'}},prefix),inp,suffix&&E('span',{style:{fontSize:'12px',color:'#64748b',fontFamily:'JetBrains Mono,monospace'}},suffix))
+    );
+  }
+
+  function getTabContent(){
+    if(activeTab==='epc') return E('div',{style:{display:'flex',flexDirection:'column',gap:'8px'}},
+      E('div',{style:{fontSize:'9px',textTransform:'uppercase',letterSpacing:'2px',color:'#4b5563',marginBottom:'4px'}},'Tarifas EPC ($/W)'),
+      adminField('Sunrun',ADMIN_CFG.epc.sunrun,v=>{ADMIN_CFG.epc.sunrun=v;saveAdmin();},'$','/W'),
+      adminField('LightReach',ADMIN_CFG.epc.lightreach,v=>{ADMIN_CFG.epc.lightreach=v;saveAdmin();},'$','/W'),
+      adminField('Cash/Financing',ADMIN_CFG.epc.cash,v=>{ADMIN_CFG.epc.cash=v;saveAdmin();},'$','/W')
+    );
+    if(activeTab==='battery') return E('div',{style:{display:'flex',flexDirection:'column',gap:'8px'}},
+      E('div',{style:{fontSize:'9px',textTransform:'uppercase',letterSpacing:'2px',color:'#4b5563',marginBottom:'4px'}},'Precios de Baterías'),
+      adminField('1× PW3 Hybrid',ADMIN_CFG.bat1,v=>{ADMIN_CFG.bat1=v;saveAdmin();},{prefix:'$'}),
+      adminField('2× PW3 Hybrid',ADMIN_CFG.bat2,v=>{ADMIN_CFG.bat2=v;saveAdmin();},{prefix:'$'}),
+      adminField('Expansión (c/u)',ADMIN_CFG.exp,v=>{ADMIN_CFG.exp=v;saveAdmin();},{prefix:'$'})
+    );
+    if(activeTab==='adders') return E('div',{style:{display:'flex',flexDirection:'column',gap:'8px'}},
+      adminField('Problemas Eléctricos',ADMIN_CFG.elec,v=>{ADMIN_CFG.elec=v;saveAdmin();},{prefix:'$'}),
+      adminField('Low FICO',ADMIN_CFG.fico,v=>{ADMIN_CFG.fico=v;saveAdmin();},{prefix:'$'}),
+      E('div',{style:{fontSize:'9px',textTransform:'uppercase',letterSpacing:'2px',color:'#4b5563',margin:'8px 0 4px'}},'Techo'),
+      adminField('Cemento',ADMIN_CFG.roof.cemento,v=>{ADMIN_CFG.roof.cemento=v;saveAdmin();},{prefix:'$'}),
+      adminField('Galvalum',ADMIN_CFG.roof.galvalum,v=>{ADMIN_CFG.roof.galvalum=v;saveAdmin();},{prefix:'$'})
+    );
+    if(activeTab==='location') return E('div',{style:{display:'flex',flexDirection:'column',gap:'8px'}},
+      adminField('Puerto Rico',ADMIN_CFG.loc.puerto_rico,v=>{ADMIN_CFG.loc.puerto_rico=v;saveAdmin();},{prefix:'$'}),
+      adminField('Vieques',ADMIN_CFG.loc.vieques,v=>{ADMIN_CFG.loc.vieques=v;saveAdmin();},{prefix:'$'}),
+      adminField('Culebra',ADMIN_CFG.loc.culebra,v=>{ADMIN_CFG.loc.culebra=v;saveAdmin();},{prefix:'$'})
+    );
+  }
+
+  const tabBar=E('div',{className:'admin-tabs'});
+  tabs.forEach(t=>{
+    const btn=E('button',{className:'admin-tab '+(t===activeTab?'active':'inactive'),onClick:()=>{activeTab=t;tabBar.querySelectorAll('button').forEach(b=>b.className='admin-tab inactive');btn.className='admin-tab active';bodyDiv.innerHTML='';bodyDiv.appendChild(getTabContent());}},tabLabels[t]);
+    tabBar.appendChild(btn);
+  });
+  const bodyDiv=E('div',{className:'modal-body'},getTabContent());
+  const saveBtn=E('button',{className:'btn-pdf',style:{width:'100%'},onClick:()=>{render();saveBtn.textContent='✓ Cambios Aplicados';setTimeout(()=>saveBtn.textContent='Aplicar y Cerrar',2000);}},);
+  saveBtn.textContent='Aplicar y Cerrar';
+  saveBtn.addEventListener('click',()=>{render();MODAL=null;render();});
+
+  return E('div',{className:'modal-overlay',onClick:e=>{if(e.target.className==='modal-overlay'){MODAL=null;render();}}},
+    E('div',{className:'modal'},
+      E('div',{className:'modal-bar'}),
+      E('div',{className:'modal-head'},
+        E('div',{},E('div',{className:'modal-title'},'Panel Admin'),E('div',{className:'modal-sub'},'Editar precios en tiempo real')),
+        E('div',{style:{display:'flex',gap:'8px',alignItems:'center'}},
+          E('button',{className:'btn-ghost',style:{color:'#ef4444',borderColor:'rgba(239,68,68,0.4)'},onClick:()=>{if(confirm('¿Resetear a valores por defecto?')){Object.assign(ADMIN_CFG,JSON.parse(JSON.stringify(ADMIN_DEFAULTS)));saveAdmin();render();}}},'Reset'),
+          E('button',{className:'btn-close',onClick:()=>{MODAL=null;render();}},'✕')
+        )
+      ),
+      tabBar,
+      bodyDiv,
+      E('div',{style:{padding:'16px 24px',borderTop:'1px solid #2d3f55',flexShrink:'0'}},saveBtn)
+    )
+  );
+}
+
+// ══════════════════════════════════════════
+// MAIN RENDER
+// ══════════════════════════════════════════
+function render(){
+  const s=STATE;
+  const res=calcAll(s,ADMIN_CFG);
+  const pos=getPos(s.sellerPosition);
+  const app=document.getElementById('app');
+  app.innerHTML='';
+
+  // Header
+  const posDisplay=E('div',{});
+
+  const hdr=E('header',{className:'header'},
+    E('div',{className:'header-inner'},
+      E('div',{className:'logo-wrap'},
+        E('svg',{className:'sun-icon',viewBox:'0 0 36 36',fill:'none',xmlns:'http://www.w3.org/2000/svg'},
+          ...[
+            ['circle',{cx:'18',cy:'18',r:'7',fill:'#f4b63f'}],
+            ...([0,45,90,135,180,225,270,315].map((deg,i)=>['line',{x1:'18',y1:'18',x2:String(18+13*Math.cos(deg*Math.PI/180)),y2:String(18+13*Math.sin(deg*Math.PI/180)),stroke:'#f4b63f','stroke-width':'2.2','stroke-linecap':'round',opacity:i%2===0?'1':'0.5'}]))
+          ].map(([tag,attrs])=>{const e=document.createElementNS('http://www.w3.org/2000/svg',tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));return e;})
+        ),
+        E('div',{},E('div',{className:'logo-title'},'SUN SOLUTIONS'),E('div',{className:'logo-sub'},'Quotes & Commissions'))
+      ),
+      E('div',{className:'header-actions'},
+        posDisplay,
+        
+        pos.admin&&E('button',{className:'btn-ghost',style:{color:'#f4b63f',borderColor:'rgba(244,182,63,0.4)'},onClick:()=>{MODAL='admin';render();}},'⚙️ Admin'),
+        
+      )
+    )
+  );
+  app.appendChild(hdr);
+
+  const main=E('main',{},
+  
+    renderGeneral(s,res,pos),
+    renderPanels(s),
+    renderStorage(s,ADMIN_CFG),
+    renderAdders(s,res),
+    renderSales(s,res,pos),
+    renderResults(s,res,pos),
+    
+    E('footer',{},'Sun Solutions © 2026 — Quotes & Commissions Engine')
+  );
+  app.appendChild(main);
+
+  // Modals
+  if(MODAL==='summary') app.appendChild(renderSummaryModal(s,res,pos));
+  if(MODAL==='history') app.appendChild(renderHistoryModal());
+  if(MODAL==='admin')   app.appendChild(renderAdminModal(s));
+}
+
+render();
+</script>
+</body>
 </html>
